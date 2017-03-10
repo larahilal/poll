@@ -2,10 +2,10 @@
 
 @section('stats')
 
-@foreach($all_flavors as $flavor)
+@foreach($options as $option)
 	
 
-{{$flavor->flavor}}  {{$flavor->likes}}
+{{$option->option}}  {{$option->likes}}
 
 @endforeach
 

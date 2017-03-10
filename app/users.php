@@ -11,6 +11,8 @@ class users extends Authenticatable
 
     public $timestamps = false;
 
+
+
     /**
      * The attributes that are mass assignable.
      *
@@ -28,4 +30,10 @@ class users extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function options(){
+
+        return $this->belongsToMany('App\option', 'option_user','user_id', 'option_id');
+
+    }
 }

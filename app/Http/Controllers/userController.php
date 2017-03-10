@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\users;
 
+//use App\option;
+
 use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Facades\Auth;
@@ -36,13 +38,20 @@ class userController extends Controller
 
     	$user->save();
 
-    	return view('loggedin_welcome');
-
+        return redirect()->route('displayPoll');
 	}
 
 	public function login_form(){
 
-		return view('login_form');
+        if (Auth::check('laravel_session')) {
+
+            return redirect()->route('displayPoll');
+
+        } else {
+
+		    return view('login_form');
+
+        }
 
 	}
 
@@ -50,12 +59,24 @@ class userController extends Controller
 
         if (Auth::attempt(array('email' => $request->email, 'password' => $request->password))) {
 
-            return view('loggedin_welcome');
+            return redirect()->route('displayPoll');
+
+        } else {
+
+            return redirect()->route('loginForm');
 
         }
+    }
 
-        die('did not work');
+    public function get_user_with_options(){
 
+        $user = Auth::user();
+
+        echo '<pre>';
+
+        foreach ($user->options AS $option) {
+            echo $option->option;
+        }
 
     }
 

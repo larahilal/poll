@@ -11,16 +11,19 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'PollController@home');
 
-Route::post('/', 'flavorController@vote');
+Route::get('/poll/{poll_id}', 'PollController@displayPoll')->name('displayPoll');
+Route::post('/vote', 'PollController@vote');
+Route::get('/results', 'PollController@viewResults')->name('results');
 
-Route::get('register', 'userController@register');
+
+Route::get('register', 'userController@register')->name('registerForm');
 
 Route::post('register', 'userController@save_user');
 
-Route::get('login_form', 'userController@login_form');
+Route::get('login_form', 'userController@login_form')->name('loginForm');
 
 Route::post('login', 'userController@login');
+
+Route::get('user_with_flavor', 'userController@get_user_with_flavor');

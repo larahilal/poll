@@ -2,7 +2,11 @@
 
 @section('question')
 
-What flavor do you like the  most?
+    @foreach($polls as $poll)
+
+        <a href="http://127.0.0.1:8000/poll/{{$poll->id}}">{{ $poll->title }}</a>
+
+    @endforeach
 
 @stop
 
@@ -10,9 +14,12 @@ What flavor do you like the  most?
 @section('welcome')
 
 
-Click <a href="http://127.0.0.1:8000/register">here</a> here to register and win!! </br></br>
 
-Already registered? log in <a href="http://127.0.0.1:8000/login_form">here</a>
+
+
+Click <a href="{{ route('registerForm') }}">here</a> here to register and win!! </br></br>
+
+Already registered? <a href="{{ route('loginForm') }}">Login Here</a>
 
 
 @stop
