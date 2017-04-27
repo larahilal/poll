@@ -45,7 +45,7 @@ class userController extends Controller
 
         if (Auth::check('laravel_session')) {
 
-            return redirect()->route('displayPoll');
+            //return redirect()->route('displayPoll');
 
         } else {
 
@@ -59,7 +59,7 @@ class userController extends Controller
 
         if (Auth::attempt(array('email' => $request->email, 'password' => $request->password))) {
 
-            return redirect()->route('displayPoll');
+            return redirect()->route('home');
 
         } else {
 
@@ -68,15 +68,11 @@ class userController extends Controller
         }
     }
 
-    public function get_user_with_options(){
+    public function logout(){
 
-        $user = Auth::user();
+        Auth::logout();
 
-        echo '<pre>';
-
-        foreach ($user->options AS $option) {
-            echo $option->option;
-        }
+        return redirect()->route('home');
 
     }
 

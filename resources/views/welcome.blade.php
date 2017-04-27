@@ -1,25 +1,16 @@
 @extends('layout')
 
-@section('question')
-
-    @foreach($polls as $poll)
-
-        <a href="http://127.0.0.1:8000/poll/{{$poll->id}}">{{ $poll->title }}</a>
-
-    @endforeach
-
-@stop
-
-
 @section('welcome')
 
+    Welcome!<br>
 
+    Create a poll <a href="{{ route('createPollForm') }}">here</a> <br><br>
 
+    View my polls <a href="{{ route('ViewMyPolls') }}">here</a> <br><br>
 
+    Log out <a href="{{ route('LogOut') }}">here</a>
 
-Click <a href="{{ route('registerForm') }}">here</a> here to register and win!! </br></br>
-
-Already registered? <a href="{{ route('loginForm') }}">Login Here</a>
 
 
 @stop
+

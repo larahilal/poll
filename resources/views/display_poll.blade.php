@@ -13,14 +13,17 @@
 
 
     <form action="/vote" method="POST">
+
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         @foreach ($poll->options as $option)
 
-            {{ $option->option }}:
-            <input type="radio" name="option" value="{{ $option->option }}">
+            {{ $option->option }}
+
+            <input type="radio" name="option_id" value="{{ $option->id }}">
 
         @endforeach
+
 
         Submit:
         <input type="submit" value="Submit">

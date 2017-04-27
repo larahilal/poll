@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Flavor Poll</title>
+        <title>Poll</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -92,6 +92,15 @@
                     @yield('loggedin_welcome')
 
                     @yield('login_form')
+
+                    @yield('home')
+
+                    @yield('create_poll')
+
+                    @yield('my_poll')
+
+                    @yield('edit_poll')
+
                     
                 </div>
             </div>

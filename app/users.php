@@ -36,4 +36,10 @@ class users extends Authenticatable
         return $this->belongsToMany('App\option', 'option_user','user_id', 'option_id');
 
     }
+
+    public function poll(){
+
+        return $this->hasMany('App\poll');
+
+    }
 }
