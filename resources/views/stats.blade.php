@@ -2,12 +2,15 @@
 
 @section('stats')
 
-@foreach($options as $option)
-	
+    @foreach($options as $option)
 
-{{$option->option}}  {{$option->likes}}
+        {{$option->option}}  {{$option->likes}}
 
-@endforeach
+    @endforeach
+
+    <br><br>
+
+    <a href="{{ route('home') }}">Go home</a>
 
 
 @stop

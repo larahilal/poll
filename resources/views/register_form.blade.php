@@ -2,7 +2,20 @@
 
 @section('register')
 
-<form action="register" method="POST">
+    <h1>Fill out all the fields to register</h1>
+
+    @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+
+    <form action="register" method="POST">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
    	First Name:

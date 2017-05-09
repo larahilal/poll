@@ -22,11 +22,18 @@ class userController extends Controller
 
 	}
 
-
-
 	public function save_user(Request $request){
 
-		$user = new users;
+		$this->validate($request,[
+
+            'first_name' => 'bail|required|max:255',
+            'last_name' => 'required|max:255',
+            'email' => 'required|unique:users|max:255',
+            'password' => 'required|max:255',
+
+        ]);
+
+        $user = new users;
 
     	$user->first_name = $request->first_name;
 
@@ -38,14 +45,14 @@ class userController extends Controller
 
     	$user->save();
 
-        return redirect()->route('displayPoll');
+        return redirect()->route('home')->with('status', 'You have been registered! Please log in');
 	}
 
 	public function login_form(){
 
         if (Auth::check('laravel_session')) {
 
-            //return redirect()->route('displayPoll');
+            return redirect()->route('home');
 
         } else {
 

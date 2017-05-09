@@ -25,6 +25,14 @@
 
     @else
 
+        @if (session('status'))
+            <div class="alert alert-success">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        <br><br>
+
         Click <a href="{{ route('registerForm') }}">here</a> to register<br><br>
 
         Already registered? <a href="{{ route('loginForm') }}">Login Here</a>

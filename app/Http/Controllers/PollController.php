@@ -58,22 +58,32 @@ class PollController extends Controller
 
 	public function insert_poll(Request $request){
 
+		$user_id = Auth::user()->id;
+
 		$poll = new poll;
 		$poll->title = $request->title;
 		$poll->user_id = Auth::user()->id;
-		$poll->save();
 
-		$option1 = new option;
-		$option1->option = $request->option1;
-		$option1->poll_id = $poll->id;
-		$option1->save();
+		if($user_id == $poll->user_id) {
 
-		$option2 = new option;
-		$option2->option = $request->option2;
-		$option2->poll_id = $poll->id;
-		$option2->save();
+			$poll->save();
 
-		return redirect()->route('viewMyPolls');
+			$option1 = new option;
+			$option1->option = $request->option1;
+			$option1->poll_id = $poll->id;
+			$option1->save();
+
+			$option2 = new option;
+			$option2->option = $request->option2;
+			$option2->poll_id = $poll->id;
+			$option2->save();
+
+			return redirect()->route('viewMyPolls');
+
+		} else {
+
+			return redirect()->route('createPollForm');
+		}
 
 	}
 
@@ -89,50 +99,79 @@ class PollController extends Controller
 
 	public function edit_my_poll($poll_id){
 
+		$user_id = Auth::user()->id;
+
 		$poll = poll::where('id', $poll_id)->first();
 
-		return view('edit_poll', array("poll" => $poll));
+		if($user_id == $poll->user_id){
+
+			return view('edit_poll', array("poll" => $poll));
+
+		} else {
+
+			return redirect()->route('viewMyPolls');
+
+		}
 
 	}
 
 	public function save_edited_poll(Request $request){
 
+		$user_id = Auth::user()->id;
+
 		$poll = poll::where('id', $request->id)->first();
 
-		$poll->title = $request->title;
+		if($poll->user_id == $user_id) {
 
-		$poll->save();
+			$poll->title = $request->title;
 
-		$count = 0;
+			$poll->save();
 
-		$option_titles = $request->options;
+			$count = 0;
 
-		$option_ids = $request->option_ids;
+			$option_titles = $request->options;
 
-		foreach($option_ids as $option_id){
+			$option_ids = $request->option_ids;
 
-			$option = option::where('id', $option_id)->first();
+			foreach ($option_ids as $option_id) {
 
-			$option->option = $option_titles[$count];
+				$option = option::where('id', $option_id)->first();
 
-			$option->save();
+				$option->option = $option_titles[$count];
 
-			$count++;
+				$option->save();
+
+				$count++;
+
+			}
+
+			return redirect()->route('viewMyPolls');
+
+		} else {
+
+			return redirect()->route('home');
 
 		}
-
-		return redirect()->route('viewMyPolls');
 
 	}
 
 	public function delete_my_poll($poll_id){
 
+		$user_id = Auth::user()->id;
+
 		$poll = poll::where('id', $poll_id)->first();
 
-		$poll->delete();
+		if($poll->user_id == $user_id) {
 
-		return redirect()->route('home');
+			$poll->delete();
 
+			return redirect()->route('home');
+
+		} else {
+
+			return redirect()->route('home');
+
+		}
 	}
 
 }
