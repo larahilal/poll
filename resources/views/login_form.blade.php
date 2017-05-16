@@ -10,7 +10,7 @@
 
         Password:
 
-        <input type="text" name="password"></br></br>
+        <input type="password" name="password"></br></br>
 
         Submit:
         <input type="submit" value="Submit">

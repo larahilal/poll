@@ -2,6 +2,13 @@
 
 @section('my_poll')
 
+    @if (session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
+        </div>
+    @endif
+
+    <br><br>
 
     @foreach($my_polls as $poll)
 

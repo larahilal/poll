@@ -14,7 +14,7 @@
 Route::get('/', 'PollController@home')->name('home');
 
 Route::get('/poll/{poll_id}', 'PollController@displayPoll')->name('displayPoll');
-Route::post('/vote', 'PollController@vote');
+Route::post('/vote', 'PollController@cast_vote');
 Route::get('/results/{poll_id}', 'PollController@viewResults')->name('results');
 
 

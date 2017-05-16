@@ -10,6 +10,8 @@ use App\poll;
 
 use Illuminate\Support\Facades\Auth;
 
+use App\vote;
+
 class PollController extends Controller
 {
 
@@ -28,19 +30,43 @@ class PollController extends Controller
 		return view('display_poll', array('poll'=>$poll));
 	}
 
-    public function vote(Request $request){
+    public function cast_vote(Request $request){
 
-		$option_id = $request->option_id;
+		$user = Auth::user()->id;
 
-    	$option = option::where('id', $option_id)->first();
+		$casted_votes = vote::where('user_id', $user)->get();
 
-    	$option->likes = $option->likes+1;
+		foreach ($casted_votes as $casted_vote){
 
-    	$option->save();
+			if($user == $casted_vote->user_id and $request->poll_id == $casted_vote->poll_id){
 
-		$poll_id = $option->poll_id;
+				return redirect()->route('home')->with('status', 'You already voted on this poll, please select a different one');
 
-		return redirect()->route('results', array('poll_id' => $poll_id));
+			} else{
+
+				$option_id = $request->option_id;
+
+				$option = option::where('id', $option_id)->first();
+
+				$option->likes = $option->likes+1;
+
+				$option->save();
+
+				$poll_id = $option->poll_id;
+
+				$vote = new vote;
+
+				$vote->user_id = Auth::user()->id;
+
+				$vote->poll_id = $poll_id;
+
+				$vote->save();
+
+				return redirect()->route('results', array('poll_id' => $poll_id));
+
+			}
+
+		}
     }
 
 	public function viewResults($poll_id)
@@ -99,17 +125,26 @@ class PollController extends Controller
 
 	public function edit_my_poll($poll_id){
 
+
 		$user_id = Auth::user()->id;
 
 		$poll = poll::where('id', $poll_id)->first();
 
-		if($user_id == $poll->user_id){
+		if(empty($poll->likes)){
 
-			return view('edit_poll', array("poll" => $poll));
+			return redirect()->route('viewMyPolls')->with('status', 'You cannot edit this poll, people already voted');
 
 		} else {
 
-			return redirect()->route('viewMyPolls');
+			if ($user_id == $poll->user_id) {
+
+				return view('edit_poll', array("poll" => $poll));
+
+			} else {
+
+				return redirect()->route('viewMyPolls');
+
+			}
 
 		}
 

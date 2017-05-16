@@ -22,6 +22,8 @@
 
             <input type="radio" name="option_id" value="{{ $option->id }}">
 
+            <input type="hidden" name="poll_id" value="{{  $poll->id }}">
+
         @endforeach
 
 

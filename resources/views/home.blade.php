@@ -5,6 +5,15 @@
 
     @if (Auth::check('laravel_session'))
 
+
+        @if (session('status'))
+            <div class="alert alert-success">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        <br><br><br>
+
         Welcome {{ Auth::user()->first_name }}
 
         <br><br>
