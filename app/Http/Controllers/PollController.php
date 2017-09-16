@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 use App\vote;
 
+use Illuminate\Support\Facades\Storage;
+
 class PollController extends Controller
 {
 
@@ -32,40 +34,47 @@ class PollController extends Controller
 
     public function cast_vote(Request $request){
 
-		$user = Auth::user()->id;
+		$userId = Auth::user()->id;
 
-		$casted_votes = vote::where('user_id', $user)->get();
+		// check if user already voted
+		$alreadyVoted = false;
+
+		$casted_votes = vote::where('user_id', $userId)->get();
 
 		foreach ($casted_votes as $casted_vote){
 
-			if($user == $casted_vote->user_id and $request->poll_id == $casted_vote->poll_id){
-
-				return redirect()->route('home')->with('status', 'You already voted on this poll, please select a different one');
-
-			} else{
-
-				$option_id = $request->option_id;
-
-				$option = option::where('id', $option_id)->first();
-
-				$option->likes = $option->likes+1;
-
-				$option->save();
-
-				$poll_id = $option->poll_id;
-
-				$vote = new vote;
-
-				$vote->user_id = Auth::user()->id;
-
-				$vote->poll_id = $poll_id;
-
-				$vote->save();
-
-				return redirect()->route('results', array('poll_id' => $poll_id));
-
+			if ($request->poll_id == $casted_vote->poll_id) {
+				$alreadyVoted = true;
+				break;
 			}
+		}
 
+		if ($alreadyVoted) {
+			// user already voted - kick him back
+			return redirect()->route('home')->with('status', 'You already voted on this poll, please select a different one');
+
+		} else {
+			// update option total likes
+			$option_id = $request->option_id;
+
+			$option = option::where('id', $option_id)->first();
+
+			$option->likes = $option->likes+1;
+
+			$option->save();
+
+			// insert user vote
+			$poll_id = $option->poll_id;
+
+			$vote = new vote;
+
+			$vote->user_id = Auth::user()->id;
+
+			$vote->poll_id = $poll_id;
+
+			$vote->save();
+
+			return redirect()->route('results', array('poll_id' => $poll_id));
 		}
     }
 
@@ -86,30 +95,25 @@ class PollController extends Controller
 
 		$user_id = Auth::user()->id;
 
+		$imagePath = request()->file('image')->store('pollimages', 's3');
+
 		$poll = new poll;
 		$poll->title = $request->title;
 		$poll->user_id = Auth::user()->id;
+		$poll->image_path = $imagePath;
+		$poll->save();
 
-		if($user_id == $poll->user_id) {
+		$option1 = new option;
+		$option1->option = $request->option1;
+		$option1->poll_id = $poll->id;
+		$option1->save();
 
-			$poll->save();
+		$option2 = new option;
+		$option2->option = $request->option2;
+		$option2->poll_id = $poll->id;
+		$option2->save();
 
-			$option1 = new option;
-			$option1->option = $request->option1;
-			$option1->poll_id = $poll->id;
-			$option1->save();
-
-			$option2 = new option;
-			$option2->option = $request->option2;
-			$option2->poll_id = $poll->id;
-			$option2->save();
-
-			return redirect()->route('viewMyPolls');
-
-		} else {
-
-			return redirect()->route('createPollForm');
-		}
+		return redirect()->route('viewMyPolls');
 
 	}
 
@@ -125,12 +129,13 @@ class PollController extends Controller
 
 	public function edit_my_poll($poll_id){
 
-
 		$user_id = Auth::user()->id;
 
 		$poll = poll::where('id', $poll_id)->first();
 
-		if(empty($poll->likes)){
+		$optionsWithVotes = option::where('poll_id', $poll_id)->where('likes', '>', 0)->get();
+
+		if (count($optionsWithVotes)){
 
 			return redirect()->route('viewMyPolls')->with('status', 'You cannot edit this poll, people already voted');
 

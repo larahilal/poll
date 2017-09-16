@@ -14,7 +14,7 @@
 Route::get('/', 'PollController@home')->name('home');
 
 Route::get('/poll/{poll_id}', 'PollController@displayPoll')->name('displayPoll');
-Route::post('/vote', 'PollController@cast_vote');
+Route::post('/vote', 'PollController@cast_vote')->middleware('auth');
 Route::get('/results/{poll_id}', 'PollController@viewResults')->name('results');
 
 
@@ -29,7 +29,7 @@ Route::post('login', 'userController@login');
 Route::get('user_with_flavor', 'userController@get_user_with_flavor');
 
 
-Route::get('create_poll', 'PollController@create_poll_form')->name('createPollForm');
+Route::get('create_poll', 'PollController@create_poll_form')->name('createPollForm')->middleware('auth');
 Route::post('insert_poll', 'PollController@insert_poll')->name('insert_poll');
 
 
